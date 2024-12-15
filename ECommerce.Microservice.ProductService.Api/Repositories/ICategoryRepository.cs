@@ -30,7 +30,7 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 await _context.Categories.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                return new ResponseResult(ResponseResultEnum.Success, "Category created successfully", entity);
+                return new ResponseResult(ResponseResultEnum.Success, "Category created successfully");
             }
             catch (Exception ex)
             {
@@ -46,9 +46,9 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
 
             try
             {
-                var category = await _context.Categories.FindAsync(id);
+                var category = await GetByIdAsync(id);
                 if (category == null)
-                    return new ResponseResult(ResponseResultEnum.Error, "Category not found");
+                    return new ResponseResult(ResponseResultEnum.Error, $"Category not found id: {id}");
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
@@ -84,11 +84,6 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                                  .ToListAsync();
         }
 
-        public Task<Category> GetByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ResponseResult> UpdateAsync(Category entity)
         {
             if (entity == null || entity.CategoryID < 0)
@@ -106,6 +101,11 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 LoggingService.LogException(ex);
                 return new ResponseResult(ResponseResultEnum.Error, $"Error occurs when updating category: {ex.Message}");
             }
+        }
+
+        Task<IEnumerable<Category>> IBaseRepository<Category>.GetByNameAsync(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 

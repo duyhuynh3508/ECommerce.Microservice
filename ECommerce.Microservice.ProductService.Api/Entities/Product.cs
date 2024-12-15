@@ -15,7 +15,5 @@ namespace ECommerce.Microservice.ProductService.Api.Entities
         public decimal ProductPrice { get; set; }
         public string Description { get; set; } = string.Empty;
         public string ImageURL { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("getCategoryById/{id}")]
+        [HttpGet("getCategoryById")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var response = await _categoryService.GetCategoryById(id);
@@ -68,7 +68,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost("deleteCategory/{id}")]
+        [HttpPost("deleteCategory")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var response = await _categoryService.DeleteCategory(id);

@@ -1,10 +1,9 @@
 ﻿using ECommerce.Microservice.ProductService.Api.Entities;
 using ECommerce.Microservice.ProductService.Api.Mapping;
 using ECommerce.Microservice.ProductService.Api.Models.Category;
+using ECommerce.Microservice.ProductService.Api.RedisCaching;
 using ECommerce.Microservice.ProductService.Api.Repositories;
-using ECommerce.Microservice.SharedLibrary.BaseEntity;
-using ECommerce.Microservice.SharedLibrary.BaseModel;
-using ECommerce.Microservice.SharedLibrary.Mapping;
+using ECommerce.Microservice.SharedLibrary.Logging;
 using ECommerce.Microservice.SharedLibrary.Response;
 
 namespace ECommerce.Microservice.ProductService.Api.Services
@@ -20,34 +19,47 @@ namespace ECommerce.Microservice.ProductService.Api.Services
 
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ICategoryMapping _categoryMapping;
-
-        public CategoryService(ICategoryRepository categoryRepository, ICategoryMapping categoryMapping)
+        private readonly ICategoryRepository _repository;
+        private readonly ICategoryMapping _mapping;
+        private readonly IRedisCachingHandler _cacheHelper;
+        private const string CategoryCacheKey = "categories";
+        public CategoryService(ICategoryRepository repository, ICategoryMapping mapping, IRedisCachingHandler cacheHelper)
         {
-            _categoryRepository = categoryRepository;
-            _categoryMapping = categoryMapping;
+            _repository = repository;
+            _mapping = mapping;
+            _cacheHelper = cacheHelper;
         }
 
         public async Task<ResponseResult> CreateNewCategory(CategoryModel model)
         {
-            var category = (Category)_categoryMapping.ToEntity(model);
+            var category = (Category)_mapping.ToEntity(model);
 
-            var responseResult = await _categoryRepository.CreateAsync(category);
+            var responseResult = await _repository.CreateAsync(category);
+
+            try
+            {
+                if (responseResult != null && responseResult.responseResult == ResponseResultEnum.Success)
+                    await _cacheHelper.RemoveAsync(CategoryCacheKey);
+            }
+            catch (Exception ex)
+            {
+                LoggingService.LogException(ex);
+                return responseResult;
+            }
 
             return responseResult;
         }
 
         public async Task<ResponseResult> DeleteCategory(int id)
         {
-            var responseResult = await _categoryRepository.DeleteAsync(id);
+            var responseResult = await _repository.DeleteAsync(id);
 
             return responseResult;
         }
 
         public async Task<ResponseResult> GetAllCategories()
         {
-            var categories = await _categoryRepository.GetAllAsync();
+            var categories = await _repository.GetAllAsync();
             List<CategoryModel> categoryModels = new List<CategoryModel>();
 
             if (categories == null || !categories.Any())
@@ -55,7 +67,7 @@ namespace ECommerce.Microservice.ProductService.Api.Services
 
             foreach (var item in categories)
             {
-                var model = (CategoryModel)_categoryMapping.ToModel(item);
+                var model = (CategoryModel)_mapping.ToModel(item);
                 categoryModels.Add(model);
             }
 
@@ -64,11 +76,11 @@ namespace ECommerce.Microservice.ProductService.Api.Services
 
         public async Task<ResponseResult> GetCategoryById(int id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category = await _repository.GetByIdAsync(id);
 
             if (category == null) return new ResponseResult(ResponseResultEnum.Error, "Cannot find category!");
 
-            var categoryModel = (CategoryModel)_categoryMapping.ToModel(category);
+            var categoryModel = (CategoryModel)_mapping.ToModel(category);
 
             return new ResponseResult(ResponseResultEnum.Success, "", categoryModel);
         }
@@ -78,13 +90,13 @@ namespace ECommerce.Microservice.ProductService.Api.Services
             if (model == null)
                 return new ResponseResult(ResponseResultEnum.Error, "Cannot find category!");
 
-            var categoryToUpdate = await _categoryRepository.GetByIdAsync(model.CategoryID);
+            var categoryToUpdate = await _repository.GetByIdAsync(model.CategoryID);
 
             if (categoryToUpdate == null) return new ResponseResult(ResponseResultEnum.Error, "Cannot find category!");
 
-            categoryToUpdate = (Category)_categoryMapping.ToEntity(categoryToUpdate, model);
+            categoryToUpdate = (Category)_mapping.ToEntity(categoryToUpdate, model);
 
-            var responseResult = await _categoryRepository.UpdateAsync(categoryToUpdate);
+            var responseResult = await _repository.UpdateAsync(categoryToUpdate);
 
             return responseResult;
         }

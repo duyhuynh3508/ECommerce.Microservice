@@ -9,6 +9,7 @@ namespace ECommerce.Microservice.ProductService.Api.Mapping
 {
     public interface IProductMapping : IBaseMapping<BaseEntity, BaseModel>
     {
+        ProductModel ToModel(Product product, Category category, Currency currency);
     }
 
     public class ProductMapping : IProductMapping
@@ -27,9 +28,7 @@ namespace ECommerce.Microservice.ProductService.Api.Mapping
                     ProductName = productModel.ProductName,
                     ProductPrice = productModel.ProductPrice,
                     Description = productModel.Description,
-                    ImageURL = productModel.ImageURL,
-                    CreatedDate = productModel.CreatedDate,
-                    LastUpdatedDate = productModel.LastUpdatedDate,
+                    ImageURL = productModel.ImageURL
                 };
             }
             else if (model is ProductCreateModel productCreateModel)
@@ -41,8 +40,7 @@ namespace ECommerce.Microservice.ProductService.Api.Mapping
                     ProductName = productCreateModel.ProductName,
                     ProductPrice = productCreateModel.ProductPrice,
                     Description = productCreateModel.Description,
-                    ImageURL = productCreateModel.ImageURL,
-                    CreatedDate = DateTime.Now
+                    ImageURL = productCreateModel.ImageURL
                 };
             }
 
@@ -61,7 +59,6 @@ namespace ECommerce.Microservice.ProductService.Api.Mapping
                     product.ProductPrice = productUpdateModel.ProductPrice;
                     product.Description = productUpdateModel.Description;
                     product.ImageURL = productUpdateModel.ImageURL;
-                    product.LastUpdatedDate = DateTime.Now;
                 }
             }
 
@@ -82,10 +79,36 @@ namespace ECommerce.Microservice.ProductService.Api.Mapping
                     ProductName = product.ProductName,
                     ProductPrice = product.ProductPrice,
                     Description = product.Description,
-                    ImageURL = product.ImageURL,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    ImageURL = product.ImageURL
                 };
+            }
+
+            return model;
+        }
+
+        public ProductModel ToModel(Product product, Category category, Currency currency)
+        {
+            ProductModel model = new ProductModel();
+
+            if (product != null)
+            {
+                model.ProductID = product.ProductID;
+                model.ProductName = product.ProductName;
+                model.ProductPrice = product.ProductPrice;
+                model.Description = product.Description;
+                model.ImageURL = product.ImageURL;
+            }
+
+            if (category != null)
+            {
+                model.CategoryID = (CategoryEnum)category.CategoryID;
+                model.CategoryName = category.CategoryName;
+            }
+
+            if (currency != null)
+            {
+                model.CurrencyID = (CurrencyEnum)currency.CurrencyID;
+                model.CurrencyName = currency.CurrencyName;
             }
 
             return model;

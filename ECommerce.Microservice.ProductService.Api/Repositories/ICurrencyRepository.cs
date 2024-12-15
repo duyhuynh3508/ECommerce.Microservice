@@ -30,7 +30,7 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 await _context.Currencies.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                return new ResponseResult(ResponseResultEnum.Success, "Currency created successfully", entity);
+                return new ResponseResult(ResponseResultEnum.Success, "Currency created successfully");
             }
             catch (Exception ex)
             {
@@ -46,9 +46,9 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
 
             try
             {
-                var currency = await _context.Currencies.FindAsync(id);
+                var currency = await GetByIdAsync(id);
                 if (currency == null)
-                    return new ResponseResult(ResponseResultEnum.Error, "Currency not found");
+                    return new ResponseResult(ResponseResultEnum.Error, $"Currency not found by id: {id}");
 
                 _context.Currencies.Remove(currency);
                 await _context.SaveChangesAsync();
@@ -84,11 +84,6 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                                  .ToListAsync();
         }
 
-        public Task<Currency> GetByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ResponseResult> UpdateAsync(Currency entity)
         {
             if (entity == null || entity.CurrencyID < 0)
@@ -106,6 +101,11 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 LoggingService.LogException(ex);
                 return new ResponseResult(ResponseResultEnum.Error, $"Error occurs when updating currency: {ex.Message}");
             }
+        }
+
+        Task<IEnumerable<Currency>> IBaseRepository<Currency>.GetByNameAsync(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 

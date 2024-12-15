@@ -1,5 +1,6 @@
 using ECommerce.Microservice.ProductService.Api.DatabaseDbContext;
 using ECommerce.Microservice.ProductService.Api.Mapping;
+using ECommerce.Microservice.ProductService.Api.RedisCaching;
 using ECommerce.Microservice.ProductService.Api.Repositories;
 using ECommerce.Microservice.ProductService.Api.Services;
 using ECommerce.Microservice.SharedLibrary.ServiceRegistration;
@@ -7,8 +8,8 @@ using ECommerce.Microservice.SharedLibrary.ServiceRegistration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-SharedServiceRegistration.AddSharedServices<ProductDbContext>(builder.Services, builder.Configuration, builder.Configuration["MySerilog:FileName"]!);
-
+SharedServiceRegistration.AddSharedServices<ProductDbContext>(builder.Services, builder.Configuration, builder.Configuration["MySerilog:FileName"]!, true);
+builder.Services.AddScoped<IRedisCachingHandler, RedisCachingHandler>();
 //For Product
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -40,7 +41,7 @@ if (app.Environment.IsDevelopment())
 SharedServiceRegistration.UseSharedPolicies(app);
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

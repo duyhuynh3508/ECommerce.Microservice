@@ -1,0 +1,6 @@
+@ECommerce.Microservice.BasketService.Api_HostAddress = http://localhost:5036
+
+GET {{ECommerce.Microservice.BasketService.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

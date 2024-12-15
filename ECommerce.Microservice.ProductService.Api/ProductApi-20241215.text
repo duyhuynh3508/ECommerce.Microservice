@@ -1,0 +1,44 @@
+2024-12-15 12:20:19.174 +07:00 [INF] 
+                Exception Occurred:
+                -------------------
+                Message: Value cannot be null. (Parameter 's')
+                Inner Exception: None
+                Source: System.Private.CoreLib
+                Stack Trace:    at System.ArgumentNullException.Throw(String paramName)
+   at System.Text.Encoding.GetBytes(String s)
+   at ECommerce.Microservice.SharedLibrary.ServiceRegistration.SharedServiceRegistration.<>c__DisplayClass0_0`1.<AddSharedServices>b__2(JwtBearerOptions options) in C:\ECommerce.Microservice\ECommerce.Microservice.SharedLibrary\ServiceRegistration\SharedServiceRegistration.cs:line 34
+   at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+   at System.Lazy`1.CreateValue()
+   at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+   at Microsoft.Extensions.Options.OptionsMonitor`1.Get(String name)
+   at Microsoft.AspNetCore.Authentication.AuthenticationHandler`1.InitializeAsync(AuthenticationScheme scheme, HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationHandlerProvider.GetHandlerAsync(HttpContext context, String authenticationScheme)
+   at Microsoft.AspNetCore.Authentication.AuthenticationService.AuthenticateAsync(HttpContext context, String scheme)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at ECommerce.Microservice.SharedLibrary.Middleware.GlobalException.InvokeAsync(HttpContext context) in C:\ECommerce.Microservice\ECommerce.Microservice.SharedLibrary\Middleware\GlobalException.cs:line 22
+                -------------------
+2024-12-15 12:20:19.210 +07:00 [WRN] Value cannot be null. (Parameter 's')
+2024-12-15 12:28:26.381 +07:00 [INF] 
+                Exception Occurred:
+                -------------------
+                Message: An error occurred while saving the entity changes. See the inner exception for details.
+                Inner Exception: Cannot insert the value NULL into column 'CreatedDate', table 'eCommerce_ProductService.dbo.tblProducts'; column does not allow nulls. INSERT fails.
+                Source: Microsoft.EntityFrameworkCore.Relational
+                Stack Trace:    at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at ECommerce.Microservice.ProductService.Api.Repositories.ProductRepository.CreateAsync(Product entity) in C:\ECommerce.Microservice\ECommerce.Microservice.ProductService.Api\Repositories\IProductRepository.cs:line 33
+                -------------------
+2024-12-15 12:28:26.421 +07:00 [WRN] An error occurred while saving the entity changes. See the inner exception for details.

@@ -7,12 +7,12 @@ namespace ECommerce.Microservice.ProductService.Api.Models.Product
     {
         public int ProductID { get; set; }
         public CategoryEnum CategoryID { get; set; }
+        public string CategoryName { get; set; }
         public CurrencyEnum CurrencyID { get; set; }
+        public string CurrencyName { get; set; }
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
         public string Description { get; set; }
         public string ImageURL { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
     }
 }

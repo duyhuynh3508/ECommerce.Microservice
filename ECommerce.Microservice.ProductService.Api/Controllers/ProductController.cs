@@ -1,6 +1,7 @@
 ﻿using ECommerce.Microservice.ProductService.Api.Models.Product;
 using ECommerce.Microservice.ProductService.Api.Services;
 using ECommerce.Microservice.SharedLibrary.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Microservice.ProductService.Api.Controllers
@@ -16,6 +17,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         [HttpGet("getAllProducts")]
         public async Task<IActionResult> GetAllProducts()
         {
@@ -29,7 +31,8 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("getProductById/{id}")]
+        [Authorize]
+        [HttpGet("getProductById")]
         public async Task<IActionResult> GetProductById(int id)
         {
             var response = await _productService.GetProductById(id);
@@ -42,8 +45,9 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("getProductsByIds/{ids}")]
-        public async Task<IActionResult> GetProductById(IEnumerable<int> ids)
+        [Authorize]
+        [HttpGet("getProductsByIds")]
+        public async Task<IActionResult> GetProductsById(IEnumerable<int> ids)
         {
             var response = await _productService.GetProductsByIds(ids);
 
@@ -55,6 +59,35 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
+        [Authorize]
+        [HttpGet("getProductsByCategoryIds")]
+        public async Task<IActionResult> GetProductsByCategoryIds(IEnumerable<int> categoryIds)
+        {
+            var response = await _productService.GetProductsByCategoryIds(categoryIds);
+
+            if (response != null && response.responseResult == ResponseResultEnum.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+        [Authorize]
+        [HttpGet("getProductsByCategoryId")]
+        public async Task<IActionResult> GetProductsByCategoryId(int categoryId)
+        {
+            var response = await _productService.GetProductsByCategoryId(categoryId);
+
+            if (response != null && response.responseResult == ResponseResultEnum.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+        [Authorize]
         [HttpPost("createNewProduct")]
         public async Task<IActionResult> CreateNewProduct(ProductCreateModel model)
         {
@@ -81,7 +114,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost("deleteProduct/{id}")]
+        [HttpPost("deleteProduct")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var response = await _productService.DeleteProduct(id);

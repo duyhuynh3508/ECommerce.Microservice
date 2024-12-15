@@ -11,6 +11,8 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
+        Task<IEnumerable<Product>> GetProductsByCategoryID(int categoryID);
+        Task<IEnumerable<Product>> GetProductsByCategoryIDs(IEnumerable<int> categoryIDs);
     }
 
     public class ProductRepository : IProductRepository
@@ -30,7 +32,7 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 await _context.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                return new ResponseResult(ResponseResultEnum.Success, "Product created successfully", entity);
+                return new ResponseResult(ResponseResultEnum.Success, "Product created successfully");
             }
             catch (Exception ex)
             {
@@ -45,7 +47,12 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                 return new ResponseResult(ResponseResultEnum.Error, "ProductId must be greater than 0");
             try
             {
-                _context.Remove(id);
+                var product = await GetByIdAsync(id);
+
+                if (product == null)
+                    return new ResponseResult(ResponseResultEnum.Error, $"Cannot found product by id: {id}");
+
+                _context.Remove(product);
                 await _context.SaveChangesAsync();
 
                 return new ResponseResult(ResponseResultEnum.Success, "Product deleted successfully");
@@ -79,9 +86,19 @@ namespace ECommerce.Microservice.ProductService.Api.Repositories
                                  .ToListAsync();
         }
 
-        public Task<Product> GetByNameAsync(string name)
+        public async Task<IEnumerable<Product>> GetByNameAsync(string name)
         {
-            throw new NotImplementedException();
+            return await _context.Products.Where(p => p.ProductName.Contains(name)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategoryID(int categoryID)
+        {
+            return await _context.Products.Where(p => p.CategoryID.Equals(categoryID)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategoryIDs(IEnumerable<int> categoryIDs)
+        {
+            return await _context.Products.Where(p => categoryIDs.Contains(p.CategoryID)).ToListAsync();
         }
 
         public async Task<ResponseResult> UpdateAsync(Product entity)

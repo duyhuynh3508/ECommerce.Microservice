@@ -10,6 +10,6 @@ namespace ECommerce.Microservice.SharedLibrary.IBaseRepository
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetByIdsAsync(IEnumerable<int> ids);
-        Task<T> GetByNameAsync(string name);    
+        Task<IEnumerable<T>> GetByNameAsync(string name);    
     }
 }

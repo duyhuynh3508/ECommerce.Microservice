@@ -29,7 +29,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("getCurrencyById/{id}")]
+        [HttpGet("getCurrencyById")]
         public async Task<IActionResult> GetCurrencyById(int id)
         {
             var response = await _currencyService.GetCurrencyById(id);
@@ -68,7 +68,7 @@ namespace ECommerce.Microservice.ProductService.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost("deleteCurrency/{id}")]
+        [HttpPost("deleteCurrency")]
         public async Task<IActionResult> DeleteCurrency(int id)
         {
             var response = await _currencyService.DeleteCurrency(id);
